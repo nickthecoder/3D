@@ -1,0 +1,7 @@
+*.stl
+*.gcode
+*~
+/NOT_GIT
+/history
+/alicecam/*.jpg
+
