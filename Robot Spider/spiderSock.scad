@@ -1,19 +1,21 @@
 
-module sock( thickness=1, l=8, w=4, slack=0.3, curve=5, toe=3 )
+module sock( thickness=1, l=8, w=4, h=5, slack=0.3, curve=5, toe=3 )
 {
     out = w+slack*2+thickness*2;
     
-    translate([-out/2,-out/2,0])
-    difference() {
-        cube( [out,out,l ]);
-        translate([thickness+slack,thickness+slack,thickness+slack]) cube( [w,w,l ]);
-    }
+    scale( [1,h/w,1] ) {
     
-    intersection() {
-        translate( [0,0,curve-toe] ) sphere( r=curve );
-        translate( [-out/2,-out/2,-toe] ) cube( [out,out,toe] );
+        translate([-out/2,-out/2,0])
+        difference() {
+            cube( [out,out,l ]);
+            translate([thickness+slack,thickness+slack,thickness+slack]) cube( [w,w,l ]);
+        }
+        
+        intersection() {
+            translate( [0,0,curve-toe] ) sphere( r=curve );
+            translate( [-out/2,-out/2,-toe] ) cube( [out,out,toe] );
+        }
     }
-
 }
 
 module grid( across, down, dist=8 )

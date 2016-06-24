@@ -101,8 +101,9 @@ module pieces()
 }
 
 
-//mirror([1,0,0]) pieces();
-pieces();
+mirror([1,0,0]) pieces();
+//pieces();
+
 //washers( 3 );
 
 
