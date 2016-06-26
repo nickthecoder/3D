@@ -1,77 +1,106 @@
 use <label.scad>;
 
-/*
-  Creates a 2D shape useful for creating segments of circles.
-  Intersect a circle with this, and you will end up with a segment.
-*/
-module intersect_segment( r, angle, rotate )
+module ntc_tools_help()
 {
-    l = 2 * r;
+    echo( "Modules in tools.scad : " );
+    echo( "    ntc_intersect_segment, ntc_arc, ntc_rounded_arc, ntc_arrange_grid" );
+    echo( "suffix the module name with _help to see a usage diagram." );
+}
+
+ntc_tools_help();
+
+
+
+//list1 = [ for (i = [0 : 2 : 10]) i ];
+//echo(list1);
+
+/*
+  Creates a circle segment.
+  
+  r      : radius of the circle
+  angle  : size of the segment
+  rotate : angle of rotate (so the segment doesn't start at 0 degrees.
+*/
+module ntc_segment( r, angle, rotate )
+{
     n = 4;
+    l = r*2;
 
     if ( rotate ) {
-        rotate( rotate ) intersect_segment( r, angle );
+        rotate( rotate ) ntc_segment( r, angle );
 
     } else {
-
-        for ( i = [1:n] ) {
-            polygon( [ [0,0], [l * cos(angle * (i-1) / n), l * sin( angle * (i-1) / n)], [l * cos(i * angle / n), l * sin(i * angle / n ) ] ] );
+        
+        intersection() {
+            circle( r=r );
+            for ( i = [1:n] ) {
+                polygon( [ [0,0], [l * cos(angle * (i-1) / n), l * sin( angle * (i-1) / n)], [l * cos(i * angle / n), l * sin(i * angle / n ) ] ] );
+            }
         }
     }
 }
 
-module intersect_segment_help()
+#ntc_segment( 100, 355 );
+circle( r=90 );
+
+module ntc_segment_help()
 {
-  radius = 30;
-  angle = 60;
-  rotate = 45;
+    radius = 30;
+    angle = 60;
+    rotate = 45;
 
-  translate( [-50, 80, 0 ] )
-  title( "segment( radius, angle = angle, rotate=rotate )" );
+    translate( [-50, 80, 0 ] )
+    title( "segment( radius, angle = angle, rotate=rotate )" );
 
-  intersect_segment( radius, angle = angle, rotate=rotate );
+    ntc_segment( radius, angle = angle, rotate=rotate );
 
-  translate( [0,0,2] )
-  rotate( rotate )
-  label_angle( "angle", angle );
+    translate( [0,0,2] )
+    rotate( rotate )
+    label_angle( "angle", angle );
 
-  translate( [0,0,2] )
-  label_radius( "r", radius );
+    translate( [0,0,2] )
+    label_radius( "r", radius );
 
-  translate( [26,26,2] )
-  label_angle( "rotate", rotate );
+    translate( [26,26,2] )
+    label_angle( "rotate", rotate );
 }
 
-// intersect_segment_help();
+// ntc_segment_help();
 
 /*
   Create a 2D arc outer radius r1, inner radius r2, the extent of arc is "angle" degrees. starting from the x-axis.
 */
-module arc( r1, r2, angle )
+module ntc_arc( r1, r2, angle, rotate )
 {
-  intersection() {
+    intersection() {
 
-    difference() {
-      circle( r1 );
-      circle( r2 );
+        difference() {
+            circle( r1 );
+            circle( r2 );
+        }
+        ntc_segment( r1 * 2, angle, rotate );
     }
-    intersect_segment( r1 * 2, angle );
-  }
 }
   
 /*
   Create a 2D arc with rounded ends. See arc().
 */
-module rounded_arc( r1, r2, angle )
+module ntc_rounded_arc( r1, r2, angle, rotate )
 {
-  translate( [(r1 + r2) / 2, 0 ] )
-  circle( (r1 - r2) /2 );
+    if (rotate) {
+        rotate( rotate ) ntc_rounded_arc( r1, r2, angle );
+    } else {
 
-  rotate( angle )
-  translate( [(r1 + r2) / 2, 0 ] )
-  circle( (r1 - r2) /2 );
+        translate( [(r1 + r2) / 2, 0 ] ) {
+            circle( (r1 - r2) /2 );
+        }
 
-  arc( r1, r2, angle );
+        rotate( angle ) translate( [(r1 + r2) / 2, 0 ] ) {
+            circle( (r1 - r2) /2 );
+        }
+
+        ntc_arc( r1, r2, angle );
+    }
 }
 
 
