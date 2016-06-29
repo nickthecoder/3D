@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448"
+   height="1052.3622"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="filamentGuide.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="285.27854"
+     inkscape:cy="442.70689"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="mm"
+     inkscape:window-width="1440"
+     inkscape:window-height="847"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3073"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-2.5390623e-6)">
+    <path
+       id="filamentGuide"
+       style="fill:#ffce03;fill-opacity:1;stroke:none"
+       d="m 125.9433,660.94992 0,33.74315 56.23858,0 c 0,0 -0.35283,-39.66296 0,-42.17894 41.5197,-11.2157 64.67437,-14.05965 95.60558,-14.05965 0,-25.30736 0,-50.61471 0,-50.61471 0,0 -83.75531,-3.81619 -151.84416,73.11015 z m 303.68833,0 0,33.74315 -56.23858,0 c 0,0 0.35283,-39.66296 0,-42.17894 -41.5197,-11.2157 -64.67437,-14.05965 -95.60558,-14.05965 0,-25.30736 0,-50.61471 0,-50.61471 0,0 83.75531,-3.81619 151.84416,73.11015 z"
+       inkscape:connector-curvature="0"
+       inkscape:label="#use3858"
+       sodipodi:nodetypes="cccccccccccccc" />
+    <path
+       id="alice"
+       transform="translate(0,2.5390623e-6)"
+       style="fill:#a92cf2;fill-opacity:1;stroke:none"
+       d="m 307.75,625.36218 -6.25,3.75 -8.75,-0.25 -4.75,-6.5 -1,-16.5 2,-6.5 5.75,-3.5 8.5,1.25 3.75,4.5 0.75,5.75 -6,1.25 -0.75,-5.75 -3.75,-0.7045 -2.5,1.9545 -1.25,5 0.60355,11.54289 2.48484,2.58839 4.64644,-1.32322 3.5,-3.42678 z m -88.80198,8.68708 6.59645,-30.85026 12.35153,-4.15039 7.57107,31.06981 -7.70115,1.02031 -2.52294,-15.10117 -4.36185,0.4438 -2.83919,15.78998 z m 28.58014,-37.42151 4.12482,32.74575 15.40737,-0.84174 0.125,-8.00979 -9.59645,1.51523 -1.52031,-26.52919 z m 23.44526,-2.50489 2.52284,34.48541 8.97145,-0.24999 -1.90038,-34.23289 z m 43.07932,4.78045 c 0,2.0203 -0.0203,31.60026 -0.0203,31.60026 l 23.46828,4.03554 -1.39023,-10.11168 -16.24683,-0.13515 0,-7.066 10.0863,2.14023 -0.25508,-5.69606 -10.07107,-1.51016 -0.50507,-7.05076 14.71129,6.14531 -1.5,-6.92577 z"
+       inkscape:label="#path3828" />
+    <path
+       inkscape:label="#use3858"
+       inkscape:connector-curvature="0"
+       d="m 144.12041,534.82393 c 0,0 41.99219,-39.9982 72.80888,-47.70238 -3.13171,13.6201 -6.02556,29.42484 -6.02556,29.42484 -21.65046,4.48285 -47.09982,11.04686 -66.78332,18.27754 z m -18.17711,6.12599 0,33.74315 56.23858,0 c 0,0 -0.35283,-39.66296 0,-42.17894 41.5197,-11.2157 64.67437,-14.05965 95.60558,-14.05965 0,-25.30736 0,-50.61471 0,-50.61471 0,0 -83.75531,-3.81619 -151.84416,73.11015 z m 285.51122,-6.12599 c 0,0 -41.99219,-39.9982 -72.80888,-47.70238 3.13171,13.6201 6.02556,29.42484 6.02556,29.42484 21.65046,4.48285 47.09982,11.04686 66.78332,18.27754 z m 18.17711,6.12599 0,33.74315 -56.23858,0 c 0,0 0.35283,-39.66296 0,-42.17894 -41.5197,-11.2157 -64.67437,-14.05965 -95.60558,-14.05965 0,-25.30736 0,-50.61471 0,-50.61471 0,0 83.75531,-3.81619 151.84416,73.11015 z"
+       style="fill:#ffce03;fill-opacity:1;stroke:none"
+       id="filamentGuideOpen" />
+  </g>
+</svg>
