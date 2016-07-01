@@ -1,0 +1,4 @@
+use <wifiSpeakerStand.scad>;
+
+cover();
+
