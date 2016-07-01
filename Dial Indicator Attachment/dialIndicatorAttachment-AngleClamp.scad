@@ -6,8 +6,11 @@
         
     Assembly :
         Print two copies, and sandwich them with a rubber washer.
+        
+        Cut away the support material (I knicked myself twice - be more careful than me!)
         Drill the holes out, so that the screw moves freely on one piece and bites in on the other.
-        Ifusing bolts, rather than screws, then tap the hole.
+        I used M3 bolts, so drilled one 2.5mm (and then tapped it), and then other 3.5mm (loose).
+        If using bolts, rather than screws, then tap the hole.
         You can usually use the bolt itself to tap the hole, as the plastic is soft.
 */
 
