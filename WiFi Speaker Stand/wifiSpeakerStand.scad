@@ -22,6 +22,8 @@ roundBack=7;
 backWidth = 73;
 frontWidth = 91;
 depth = 91;
+height=22;
+sunken=2; // I stick the speaker to the "cover" with double sided tape, so I want the cover sunken slightly.
 
 back=[-backWidth/2+roundBack,depth/2-roundBack];
 front=[frontWidth/2-roundFront,-depth/2+roundFront];
@@ -31,7 +33,6 @@ strutW = 6;
 thickness=1.2;
 grillThickness=0.9;
 grillWidth=0.8;
-height=22;
 extra=12;
 
 slack=0.5;
@@ -113,9 +114,9 @@ module base()
         
     // The sides
     difference() {
-        edge( thickness, height+thickness+extra );
-        translate([-100,front[1]-roundFront-thickness,height+thickness+slack]) cube( [200,roundFront+thickness,extra+1] );
-        translate([-100,front[1],height+thickness+slack]) rotate([10,0,0] ) cube( [200,400,extra+1] );
+        edge( thickness, height+thickness+extra+sunken );
+        translate([-100, front[1]-roundFront-thickness, height+thickness+slack+sunken]) cube( [200,roundFront+thickness,extra+1] );
+        translate([-100, front[1], height+thickness+slack+sunken]) rotate([10,0,0] ) cube( [200,400,extra+1] );
 
         flip() speakerHoles();
     }
@@ -189,7 +190,7 @@ module buttonBottom()
     h=10;
     
     // floor
-    #ntc_cube( [23,16,2] );
+    ntc_cube( [23,16,2] );
     
     // Posts
     ntc_arrange_mirror() {
@@ -240,7 +241,7 @@ module chargerSled(w=20,l=25,h=15)
     translate( [-w/2-1,0,0] ) cube( [w+2,l+2,2] );
     
     // 90° strengthening
-    #translate( [0,l-3,0] ) ntc_cube( [2,8,8] );
+    translate( [0,l-3,0] ) ntc_cube( [2,8,8] );
     
     // Stop end
     translate( [-4, l, 0] ) cube( [8,2,h] );
@@ -257,13 +258,13 @@ module cover()
 
         // Holes for speaker wires.
         hull() {
-            speakerHoles();
+            translate([0,0,-4]) speakerHoles();
             translate([0,0,10]) speakerHoles();
         }
         
         // Holes for output wires connections.
         hull() {
-            connectionHoles();
+            translate([0,0,-4]) connectionHoles();
             translate([0,0,10]) connectionHoles();
         }
 
@@ -318,15 +319,79 @@ module connection()
     
 }
 
-powerBase();
+/*
+    Joins the two speakers via the mounting screws on the back of each speaker
+*/
+module join()
+{
+    dist = 37; // Distace of the screw hole from the mid line
+    height=13;
+    thickness= 4;
+    extra=20;
 
-//translate( [100,0,0] ) chargerSled();
+    angle = 6;
+        
+    apart = 4; // Gap between the speaker
+
+    ntc_arrange_mirror() {   
+        difference() {
+            translate( [-1,0,0] ) rotate( [0,0,-angle] ) cube( [dist + extra, thickness, height] );
+            translate( [dist,0,height/2] ) rotate( [90,0,0] ) cylinder( d=6, h=20, center=true );
+        }
+    }
+    translate( [-apart/2,0,0] ) cube( [apart, 40,height] );
+
+}
+
+module wireTidy( height=30, thickness=4 )
+{
+    difference() {
+        linear_extrude( height ) {
+            hull() {
+                ntc_arrange_mirror() translate([5,0,0]) circle( d=thickness );
+            }
+        }
+        translate( [0,0,height/2] ) rotate([-90,0,0]) cylinder( d=6,h=100, center=true );
+    }
+}
 
 
-//%flip() cover();
+module washer( d1=7, d2=4, h=2 )
+{
+    linear_extrude( h, convexity=4 ) {
+        difference() {
+            circle( d=d1 );
+            circle( d=d2 );
+        }
+    }
+}
 
-//translate( [100,0,0] ) cover();
+
+module cableTie( d, elongate=0, width=7, heft=2, forScrew=8, screw=2 )
+{
+    gap=d/3;
+    
+    difference() {
+        linear_extrude( width, convexity=4 ) {
+            difference() {
+                translate( [-d/2 - heft, -d/2 -heft] ) square( [d + elongate + heft + forScrew, d+heft*2] );
+                hull() {
+                    circle( d=d );
+                    translate( [elongate,0] ) circle( d=d );
+                }
+                // Gap to squeeze
+                square( [100,gap] );
+            }
+        }
+        
+        // Screw hole
+        translate( [d/2+elongate+forScrew/2, 0, width/2] ) rotate([90,0,0]) cylinder( d=screw, h=100, center=true );
+        translate( [d/2+elongate+forScrew/2, 0, width/2] ) rotate([-90,0,0]) cylinder( d=screw+2, h=100 );
+    }    
+}
+
 
 //powerBase();
+//%flip() powerCover();
 
 
