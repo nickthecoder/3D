@@ -1,5 +1,10 @@
 /*
-A simple sign to stick to your front door, to put off some junk mail spammers.
+    A simple sign to stick to your front door, to put off some junk mail spammers.
+    Designed to be printed in two colours.
+    
+    Print Notes
+        Use 0.3mm layer height, and pause after the first layer (i.e. height=0.6) to change the filament.
+        Resume printing to print the remaining two layers.
 */
 line = 16;
 layer = 0.3;

@@ -7,20 +7,22 @@
     Use a low in-fill : 10%
 */
 
-r=40;
+r=30;
 d=r*2;
 thickness=1;
 
 ledPinD=2;
 
 rings = 5;
-topLeds = 5;
+bottomLeds = 15;
+topLeds = 4;
 
 module led()
 {
+    translate( [r-thickness-1,0,0] )
     rotate([0,90,0]) {
-        translate([1.3,0,0]) cylinder( d=ledPinD, h=r );
-        translate([-1.3,0,0]) cylinder( d=ledPinD, h=r );
+        translate([1.3,0,0]) cylinder( d=ledPinD, h=thickness+2 );
+        translate([-1.3,0,0]) cylinder( d=ledPinD, h=thickness+2 );
     }
 }
 
@@ -51,7 +53,7 @@ module ball()
         sphere( d=d-thickness * 2 );
 
         for ( n=[0:rings-2] ) {
-            rotate( [0,0,n*17] ) ringOfLedHoles(n,floor(5 * rings - 4 * n));
+            rotate( [0,0,n*17] ) ringOfLedHoles(n, (rings-n)/rings * bottomLeds + topLeds );
         }
         translate( [0,0,-r-1] ) cylinder( r=r+2, h=r+1 );
 
