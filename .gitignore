@@ -1,6 +1,7 @@
 *.stl
 *.gcode
 generated_*.scad
+generated-*.scad
 *~
 /NOT_GIT
 /history
