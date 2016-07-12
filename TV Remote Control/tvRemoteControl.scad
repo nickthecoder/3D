@@ -1,5 +1,3 @@
-// TODO
-
 thickness = 2;
 sheet = 1.2;
 overlap = 3;
@@ -7,7 +5,7 @@ width = 55;
 length = 96;
 height = 14;
 
-radius = 4;
+radius = 3;
 
 
 module rounded( width, length, height, radius )
@@ -169,4 +167,5 @@ module top()
 }
 
 top();
-translate( [0,110,0] ) base();
+
+
