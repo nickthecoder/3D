@@ -21,20 +21,20 @@ use <ntc/tools.scad>;
 
 DEFAULT_FONT="Rufscript";
 
-module roundName( name, angle=22, r=20, font=DEFAULT_FONT, size=10 )
+module roundName( name, angle=22, r=16, font=DEFAULT_FONT, size=10 )
 {
     count = len(name);
     
     rotate( -(count-1)/2 * angle ) {
         for (i=[0:count-1]) {
             rotate( angle*i ) {
-                translate([0,-r]) text( name[i],valign="middle", halign="center", font=font, size=size );
+                translate([0,1-r]) text( name[i], valign="top", halign="center", font=font, size=size );
             }
         }
     }
 }
 
-module glassTag( name, thickness=3, r=20, size=10, angle=22, outline=1, font=DEFAULT_FONT )
+module glassTag( name, thickness=3, r=16, size=10, angle=22, outline=1, font=DEFAULT_FONT )
 {
     two = len(name) * angle < 170;
     
@@ -50,9 +50,8 @@ module glassTag( name, thickness=3, r=20, size=10, angle=22, outline=1, font=DEF
     
     if (outline>0) {
         linear_extrude( thickness/2, convexity=14 ) {
-            minkowski() {
+            offset( r=outline ) {
                 names();
-                circle( r=outline );
             }
         }
     }
@@ -64,8 +63,8 @@ module glassTag( name, thickness=3, r=20, size=10, angle=22, outline=1, font=DEF
     
     linear_extrude( thickness/2, convexity=6 ) {
         difference() {
+            circle( r=r+thickness );
             circle( r=r );
-            circle( r=r-thickness );
             translate( [-thickness,0] ) square( [thickness*2,100] );
         }
     }
@@ -85,9 +84,8 @@ module verticalName( name, thickness=3, size=10, font=DEFAULT_FONT ,outline=1 )
     
     if (outline>0) {
         linear_extrude( thickness/2, convexity=15 ) {
-            minkowski() {
+            offset( r=outline ) {
                 name();
-                circle( r=outline );
             }
         }
     }
@@ -101,17 +99,24 @@ module verticalName( name, thickness=3, size=10, font=DEFAULT_FONT ,outline=1 )
     
 }
 
-module support( thickness=3, heft=1, nozzle=0.4 )
+module support( width=4, heft=1.5, thin=0.6 )
 {
-    #ntc_arrange_mirror() translate([thickness/2,4.5,heft+0.15]) cube( [nozzle, 5, 2.6] );
-
+    h = 11-heft*2;
+    
+    color( [0.5,0.5,0.5] ) {
+        translate([-width/2,13,0]) cube( [width,thin,h] ); // upright support at end
+        translate( [-width/2,10,0] ) cube( [width,3,thin] ); // along the floor
+    }
     children();
 }
 
-module clipped( heft=1, width=4 )
+module clipped( heft=1.5, width=4 )
 {
+    h = 11-heft*2;
+    
     clip( heft=heft, width=width );
 
+    // Thin strip which - will be bent in half
     translate([-width/2,-width,0]) cube([width, width*2, 0.4]);
     
     translate( [0,-2,0] ) {
@@ -119,24 +124,48 @@ module clipped( heft=1, width=4 )
     }
 }
 
-module clip( heft=1, width=4 )
+module clip( heft=1.5, width=4 )
 {
+    h = 11-heft*2;
+    
     module shape() {
-        square( [12, heft ] );
-        square( [heft,7] );
-        translate( [0,6] ) square( [4,heft] );
+        
+        square( [14, heft ] ); // Long straight
+        square( [heft,h] ); // Upright
+        
+        translate( [0,h-heft] ) square( [4,heft] ); // Short straight
 
-        translate( [7,6+heft] ) difference() {
-            circle( r=4, $fn=12 );
-            circle( r=4-heft, $fn=12 );
+        translate( [7,h] ) difference() { // Half Round
+            circle( r=4, $fn=18 );
+            circle( r=4-heft, $fn=18 );
             translate( [-10,0] ) square( 20 );
         }
     }
     
-    translate( [-width/2, 0,0] ) rotate( [0,0,90]) rotate( [90,0,0] )
-    linear_extrude( width, convexity=6 ) shape();
+    
+    translate( [-width/2, 0, h] ) mirror([0,0,1]) rotate([90,0,90]) {
+        linear_extrude( width, convexity=6 ) shape();
+    }
     
 }
 
-support() clipped() verticalName("N");
+module verticalInitials( letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ", rows=4, xspacing=12, yspacing=28 )
+{
+    for (i=[0:len(letters)-1]) {
+        translate( [i*xspacing/rows,(i%rows)*yspacing,0] ) {
+            support() clipped() verticalName(letters[i]);
+        }
+    }
+}
+
+module initials( letters="0123456789", rows=3, xspacing=40, yspacing=46 )
+{
+    for (i=[0:len(letters)-1]) {
+        translate( [i*xspacing/rows,(i%rows)*yspacing,0] ) {
+            glassTag( str("    ", letters[i], "    " ) );
+        }
+    }
+}
+
+
 
