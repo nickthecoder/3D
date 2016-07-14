@@ -20,7 +20,6 @@ module plaqueText( text, size=26, font=PLAQUE_FONT, valign="center", halign="cen
 {
     lineHeight = size * lineHeightRatio;
     z = valign == "center" ? (len(text)-1)/2 * lineHeight : valign=="top" ? 0 : (len(text)-1) * lineHeight;
-    echo( z );
     
     if (str(text) == text) {
         text( text, size=size, font=font, valign=valign, halign=halign );
