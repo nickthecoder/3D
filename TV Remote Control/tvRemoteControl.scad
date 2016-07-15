@@ -1,3 +1,15 @@
+/*
+
+    A case for my custom built TV Remote Control.
+    It contains two circuit boards sanwiched together (which is why it is quite chunky).
+    The top one, just has buttons and a small screen, the bottom one has the arduino.
+    
+    Print Notes
+        I had some trouble with warping, and lifting from the print bed, so I printed with a brim, and
+        them strapped the piece down with extra pieces of blue tape.
+    
+*/
+
 thickness = 2;
 sheet = 1.2;
 overlap = 3;
@@ -6,7 +18,6 @@ length = 96;
 height = 14;
 
 radius = 3;
-
 
 module rounded( width, length, height, radius )
 {
