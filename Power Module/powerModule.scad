@@ -1,3 +1,18 @@
+/*
+    A box for a DC-DC Buck converter module.
+        http://www.ebay.com/itm/DC-Buck-Converter-DC5-32V-to-0-30-0V-5A-30W-Adjustable-Voltage-Regulator-Adapter/391497333210
+        A video review of it starting at 8:25
+        https://www.youtube.com/watch?v=WXMtVReWEb4
+
+    Note. This box needs both input and output connectors to be removed.
+    I used banana plugs for the output, and a standard socket for the input.
+    I drilled the hole for the input, as I didn't have the socket to hand when designing the box.
+
+    Print Notes
+        The case need support (everywhere) for the display's hole.
+        Print the ends in a different colour to the case. I chose black ends and a yellow case.
+*/
+
 use <ntc/tools.scad>;
 
 boardX = 74.5;
