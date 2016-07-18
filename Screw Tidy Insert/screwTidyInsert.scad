@@ -40,14 +40,20 @@ module insert( l, w, d, taper = 2, thickness=0.5, base=0.9 )
 
 /*
     A standard size insert.
-        x,y : The size 1,1 is the smallest box
-        
+        x,y : The size 1,1 is the smallest box (which isn't square!)
+
         My containers use sizes : 1x1, 2x1, 2x2, 4x1, 2x4
         
     My printer can't do the last one, and the 4x1 may just fit in if I rotate it. However, I need lots of
     small inserts rather than the large ones (which is why I need to print out more small ones!).
     
     With feet, you'll need to print with supports.
+    
+    Here are boxes which use this size of insert:
+    
+    http://www.maplin.co.uk/p/raaco-portable-storage-unit-including-four-13-compartment-assorted-boxes-rf35q
+    http://www.diy.com/departments/20-compartment-shallow-organiser/1017375_BQ.prd
+    
 */
 module standardInsert( x=1, y=1, feet=true )
 {
