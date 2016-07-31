@@ -47,9 +47,9 @@ module ratchetClip( size=30, thickness=DEFAULT_THICKNESS, bulgeThickness=undef, 
     module shape()
     { 
         // Small semi circle
-        #translate([-size/2+heft/4,0]) difference() {
-            circle( d=size+heft/2, $fn=quality/2 );
-            circle( d=size-heft*1.5, $fn=quality/2 );
+        translate([-size/2,0]) difference() {
+            circle( d=size+heft, $fn=quality/2 );
+            circle( d=size-heft, $fn=quality/2 );
             translate( [-size,0] ) square([size*2,size*2]);
             // arm will fit in here
             translate( [size/2-heft/4,0] ) circle( d=big+slack*2, $fn=round );
@@ -57,14 +57,14 @@ module ratchetClip( size=30, thickness=DEFAULT_THICKNESS, bulgeThickness=undef, 
 
         // Large quarter circle
         difference() {
-            circle( d=size*2, $fn=quality );
-            circle( d=size*2-heft*2, $fn=quality );
+            circle( d=size*2+heft, $fn=quality );
+            circle( d=size*2-heft, $fn=quality );
             square([size*4,size*4]);
             translate( [-size*2,-size*4] ) square([size*4,size*4]);
         }
         
         // Rounded end
-        translate( [0,size-heft/2] ) rotate(90) circle( d=heft, $fn=10 );
+        translate( [0,size] ) rotate(90) circle( d=heft, $fn=10 );
     }
     
     module armShape()
@@ -81,7 +81,7 @@ module ratchetClip( size=30, thickness=DEFAULT_THICKNESS, bulgeThickness=undef, 
     module endShape()
     {
         hull() {
-            translate( [0,size-heft] ) {
+            translate( [0,size-heft/2] ) {
                 polygon( [[heft/2,-tooth],[heft/2,0],[-heft/2,-tooth]] );
             }
         }
@@ -90,7 +90,7 @@ module ratchetClip( size=30, thickness=DEFAULT_THICKNESS, bulgeThickness=undef, 
     module notchShape()
     {
         hull() {
-            translate( [0,size-heft] ) {
+            translate( [0,size-heft/2] ) {
                 polygon( [[heft/2,0],[-heft/2,0],[-heft/2,-tooth]] );
             }
         }
@@ -162,6 +162,11 @@ module ratchetClip( size=30, thickness=DEFAULT_THICKNESS, bulgeThickness=undef, 
     //%rotate( [0,0,42] ) arm();
 }
 
+/*
+    Position the arm (or pieces attached to the arm).
+    If inPlace, then it the children are rotated, so that the arm is out of the way of the main piece.
+    Otherwise the children are translated (and you will need to print with supports).
+*/
 module armPosition( inPlace, heft=3 )
 {
     if (inPlace) {
@@ -171,11 +176,21 @@ module armPosition( inPlace, heft=3 )
     }
 }
 
+/*
+    Positions the children relative to the top of the arm.
+*/
 module armHolePosition( size, inPlace=true, offset=10, heft=DEFAULT_HEFT )
 {
-    armPosition( inPlace ) translate( [heft/2,size-offset,0] ) children();
+    armPosition( inPlace, heft=heft ) translate( [0,size-offset,0] ) children();
 }
 
+/*
+    Positions the children around the edge of the main piece.
+    
+    size  : The size of the clip (the same as the value passed to ratchetClip).
+    angle : The angle to rotate, should be between 90 and 360.
+    heft  : The same as the value passed to ratchetClip.
+*/
 module holePosition( size, angle, heft=DEFAULT_HEFT )
 {
     if (angle>180) {
@@ -185,12 +200,15 @@ module holePosition( size, angle, heft=DEFAULT_HEFT )
     }
 }
 
+/*
+    A hole suitable, useful for attaching the clip to something with a screw or nail.
+    See "ratchetClip-30.scad" for examples of how to add screw holes to the clip.
+*/
 module hole( d=3, heft=DEFAULT_HEFT, thickness=DEFAULT_THICKNESS, flat=true, $fn=16 )
 {
     big=d+heft*2;
     
- 
-    translate( [heft*0.6,0,0] ) linear_extrude( thickness ) {
+    translate( [heft/2+d/2,0,0] ) linear_extrude( thickness ) {
         difference() {
             union() {
                 if (flat) {
@@ -203,6 +221,28 @@ module hole( d=3, heft=DEFAULT_HEFT, thickness=DEFAULT_THICKNESS, flat=true, $fn
     }
 }
 
+module angledHole( d=3, heft=DEFAULT_HEFT, thickness=DEFAULT_THICKNESS, flat=true, $fn=16 )
+{
+    big=d+heft*2;
+
+    translate([heft/2-heft,0,d/2+thickness]) rotate( [0,90,0] ) {
+        linear_extrude( heft, convexity=4 ) difference() {
+            union() {
+                circle( d=big );
+                if (flat) {
+                    translate([0,-big/2]) square( [d/2+thickness, big] );
+                }
+            }
+
+            circle( d=d );
+        }
+    }
+}
+
+/*
+    Used during development to see inside the moving part, to make sure the gaps and slack were correct.
+    Not used for the final product.
+*/
 module inspect(angle=0)
 {
     intersection() {
