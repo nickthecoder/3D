@@ -1,17 +1,19 @@
 use <bluetoothSpeakerStand.scad>;
 use <ntc/tools.scad>;
 
-module powerCover()
+module monoCover()
 {
-    mirror( [1,0,0] ) difference() {
+    difference() {
         cover();
         
-        // Power button
+        // Power button hole
         translate( [0,-45,10] ) ntc_cube( [20,30,30] );
 
-        // USB charger
+        // USB charger hole
         translate( [-30,40,6] ) ntc_cube( [44,20,20] );
     }
+
 }
 
-powerCover();
+
+monoCover();

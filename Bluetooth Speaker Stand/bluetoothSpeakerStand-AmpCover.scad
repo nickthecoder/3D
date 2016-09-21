@@ -1,4 +1,4 @@
-use <wifiSpeakerStand.scad>;
+use <bluetoothSpeakerStand.scad>;
 
 cover();
 

@@ -1,4 +1,4 @@
-use <wifiSpeakerStand.scad>;
+use <bluetoothSpeakerStand.scad>;
 use <ntc/tools.scad>;
 
 // My charger sled back plate snapped, due to too much brute force!

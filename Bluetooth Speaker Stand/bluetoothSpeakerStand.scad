@@ -33,15 +33,12 @@ strutW = 6;
 thickness=1.2;
 grillThickness=0.9;
 grillWidth=0.8;
+floorThickness=1.2;
 extra=12;
 
 slack=0.5;
 
 barW=3;
-
-// Distance between the post holes on the wifi/amp board.
-ampSpaceX = 44;
-ampSpaceY = 76;
 
 postHeight = thickness+4;
 postD = 5;
@@ -148,32 +145,13 @@ module post()
     }
 }
 
-module ampBase()
-{
-    difference() {
-        mirror([1,0,0]) base();
-        flip() connectionHoles();
-    }
-    
-    // Posts
-    ntc_arrange_mirror([1,1,0]) {
-        translate( [ampSpaceX/2,ampSpaceY/2,0] ) post(); 
-    }
-
-    
-    // Supports running front to back
-    ntc_arrange_mirror() {
-        translate( [ampSpaceX/2-strutW/2,-depth/2+2,0] ) cube( [ strutW, depth-6, 2 ] );
-    }
-
-}
-
-module battery()
+module battery( l=30 )
 {
     translate([0,0,7]) difference() {
-        cube( [60,22,14], center=true );
-        translate( [0,0,4] ) rotate( [0,90,0] ) cylinder( d=20, h=70, center=true );
+        cube( [l,22,14], center=true );
+        translate( [0,0,4] ) rotate( [0,90,0] ) cylinder( d=20, h=l+2, center=true );
     }
+    %translate( [0,0,11] ) rotate( [0,90,0] ) cylinder( d=20, h=65, center=true );
 }
 
 module boost()
@@ -181,7 +159,16 @@ module boost()
     ntc_arrange_mirror( [1,1,0] ) {
         translate( [15, 7.5, 0 ] ) post();
     }
-    ntc_cube( [36,20,2] );
+    ntc_cube( [36,20,floorThickness] );
+}
+
+
+module monoModule()
+{
+    ntc_arrange_mirror( [1,1,0] ) {
+        translate( [20-2.2, 15-2.2, 0 ] ) post();
+    }
+    ntc_cube( [40,30,floorThickness] );
     
 }
 
@@ -200,28 +187,9 @@ module buttonBottom()
     // Box for switch to sit in.
     difference() {
         ntc_cube( [12,14,h] );
-        translate( [0,0,h-4] ) ntc_cube( [8.5,8.5,h] );
+        translate( [0,0,h-4] ) ntc_cube( [8.5,9,h] );
         translate( [0,-7,2] ) ntc_cube( [5,7,h] );
     }
-}
-
-module powerBase()
-{
-    difference() {
-        base();
-        connectionHoles();
-        
-        // Button hole
-        translate( [0,-45,10] )  rotate( [90,0,0] ) cylinder( d=7, h=10, center=true );
-        
-        // USB Charge hole
-        translate( [-20,45,7] ) ntc_cube([9,20,5]);
-    }
-        
-    translate( [ 22, -6,0] ) rotate( [0,0,95] ) battery();
-    translate( [-20,-14,0] ) rotate( [0,0,90] ) boost();
-    translate( [  0,-37,0] ) buttonBottom();
-    translate( [-20,45,0] ) rotate( [0,0,180] ) chargerSled();
 }
 
 module chargerSled(w=20,l=25,h=15)
@@ -238,7 +206,7 @@ module chargerSled(w=20,l=25,h=15)
     }
     
     // Floor
-    translate( [-w/2-1,0,0] ) cube( [w+2,l+2,2] );
+    translate( [-w/2-1,0,0] ) cube( [w+2,l+2, floorThickness] );
     
     // 90° strengthening
     translate( [0,l-3,0] ) ntc_cube( [2,8,8] );
@@ -281,19 +249,6 @@ module cover()
         //}
     }
 
-}
-
-module powerCover()
-{
-    mirror( [1,0,0] ) difference() {
-        cover();
-        
-        // Power button
-        translate( [0,-45,thickness+4] ) ntc_cube( [20,30,30] );
-
-        // USB charger
-        translate( [-30,40,6] ) ntc_cube( [44,20,20] );
-    }
 }
 
 module connection()
@@ -389,9 +344,4 @@ module cableTie( d, elongate=0, width=7, heft=2, forScrew=8, screw=2 )
         translate( [d/2+elongate+forScrew/2, 0, width/2] ) rotate([-90,0,0]) cylinder( d=screw+2, h=100 );
     }    
 }
-
-
-//powerBase();
-//%flip() powerCover();
-
 
