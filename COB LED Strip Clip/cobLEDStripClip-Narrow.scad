@@ -42,7 +42,7 @@ module singleClip(w, heft, size, thickness, hole)
 }
 
 // Uncomment for a batch
-//ntc_arrange_grid( 2, 24, 2, 18 )
+ntc_arrange_grid( 2, 24, 3, 18 )
 
 singleClip(15, 2.5, 6, 2, 4.5 );
 

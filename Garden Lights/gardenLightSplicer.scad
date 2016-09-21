@@ -133,5 +133,6 @@ module bothHalves()
 //include <ntc/ntc_tools.scad>;
 //ntc_arrange_grid( 4,20, 3, 20 )
 
-bothHalves();
+// Uncomment to create the object - It is commented out, because I **include** this file.
+// bothHalves();
 

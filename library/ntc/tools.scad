@@ -40,8 +40,6 @@ module ntc_segment( r, angle, rotate )
     }
 }
 
-#ntc_segment( 100, 355 );
-circle( r=90 );
 
 module ntc_segment_help()
 {
@@ -182,12 +180,16 @@ module ntc_arrange_mirror( planes=[1,0,0] )
     A cuboid centered on x and y, but not centered on z, instead it lays on the z=0 plane.
     Useful, because it behaves in a similar manner to cylinder.
 */
-module ntc_cube( size )
+module ntc_cube( size, center=[1,1,0] )
 {
+    dx = center[0] ? size[0] * -0.5 : 0;
+    dy = center[1] ? size[1] * -0.5 : 0;
+    dz = center[2] ? size[2] * -0.5 : 0;
+    
     if ( len( size ) == undef ) {
-        ntc_cube( [size, size, size ] );
+        ntc_cube( [size, size, size ], center );
     } else {
-        translate( [ size[0] * -0.5, size[1] * -0.5, 0] ) cube( size );
+        translate( [ dx, dy, dz] ) cube( size );
     }
 }
 

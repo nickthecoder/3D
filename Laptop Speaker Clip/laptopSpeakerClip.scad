@@ -18,8 +18,8 @@ module seatProfile()
     difference() {
         hull() {
             circle( d=8 );
-            translate([0,48]) circle( d=2 );
-            translate([48,0]) circle( d=2 );
+            translate([0,44]) circle( d=2 );
+            translate([52,0]) circle( d=2 );
         }
         square( 100 );
     }
@@ -31,7 +31,7 @@ module clipProfile()
     d = 22;
     thick = 2;
     
-    translate( [44,0,0] ) {
+    translate( [46,0,0] ) {
     
         translate( [0,-d/2] ) rotate( 160 ) {
             intersection() {
@@ -58,7 +58,12 @@ module clip()
     height = 54;
     z = 5;
     
-    linear_extrude( height ) seatProfile();
+    difference() {
+        linear_extrude( height, convexity=4 ) seatProfile();
+        translate([-50,10, -10.5+height/2]) rotate([0,90,0]) cylinder( d=10, h=100 );
+        translate([0,11,10.5+height/2]) cube( [100,8,13], center=true ) ;
+    }
+    
     translate([0,0,z]) linear_extrude( height-z*2 ) clipProfile();
 }
 

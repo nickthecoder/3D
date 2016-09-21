@@ -6,4 +6,5 @@ translate([0,50,0]) glassTag( "AMANDA", angle=30 );
 
 translate([0,95,0]) glassTag( "NALIN", angle=27, size=8, angle=22, font="Comic Sans MS" );
 
+translate([0,140,0]) glassTag( "KALA" );
 
