@@ -1,3 +1,12 @@
+/*
+    Print using two colours, for a words/names outlined with a different colour.
+    
+    Print Notes
+        Use the "Pause at Height" feature, and swap filament.
+        I use a base thickness of 1mm, so I Cura's "Pause at Height" z value of 1.2mm when using 0.2mm 
+*/
+
+
 PLAQUE_FONT="Rufscript";
 
 module roundedPlaque( width=60, height=40, depth=5, thickness=1.5 )
@@ -30,26 +39,20 @@ module plaqueText( text, size=26, font=PLAQUE_FONT, valign="center", halign="cen
     }
 }
 
-module outlinedPlaque( depth=5, thickness=1.5, margin=5 )
+module outlinedPlaque( depth=5, thickness=1.5, margin=2.5 )
 {
     linear_extrude( thickness ) {
-        minkowski() {
-            children();
-            circle(d=margin);
-        }
+        offset( r=margin ) children();
     }
     
     #linear_extrude( depth ) children();
 }
 
-module engravedOutlinedPlaque( depth=1, thickness=2, margin=5 )
+module engravedOutlinedPlaque( depth=1, thickness=2, margin=2.5 )
 {
     difference() {
         linear_extrude( thickness, convexity=10 ) {
-            minkowski() {
-                children();
-                circle(d=margin);
-            }
+            offset( d=margin ) children();
         }
         
         translate( [0,0,thickness-depth] ) linear_extrude( thickness, convexity=10 ) children();
