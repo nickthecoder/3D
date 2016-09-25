@@ -66,7 +66,7 @@ module cap( d=16, h=CAP_HEIGHT, insideH=INSIDE_HEIGHT, thickness=THICKNESS, top=
 */
 module inside( d=16, h=INSIDE_HEIGHT, thickness=THICKNESS, hole=4, ledHole=7, slack=SLACK )
 {
-    d1 = d-thickness*2-slack;
+    d1 = d-thickness*2-slack*2;
     
     channel=2;
     channelH=0.5;
