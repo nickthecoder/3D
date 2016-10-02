@@ -14,14 +14,20 @@
 */
 
 use <craftKnife.scad>;
+use <ntc/tools.scad>;
 
 GAP=0.8;
 THICKNESS=0.8;
 
-rotate([90,0,0])
-difference() {
-    scale([1.1,1.1,1]) bladeHole(THICKNESS*2+GAP);
-    bladeHole(THICKNESS);
-    translate([-23,20,-5]) rotate([0,0,-55]) cube([100,100,10]);
+module cover()
+{
+    rotate([90,0,0])
+    difference() {
+        scale([1.1,1.1,1]) bladeHole(THICKNESS*2+GAP);
+        bladeHole(THICKNESS);
+        translate([-23,20,-5]) rotate([0,0,-55]) cube([100,100,10]);
+    }
 }
+
+ntc_arrange_grid(1,0,4,4) cover();
 
