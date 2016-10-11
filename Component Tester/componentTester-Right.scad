@@ -1,0 +1,4 @@
+use <componentTester.scad>;
+
+cap();
+
