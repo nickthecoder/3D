@@ -11,7 +11,7 @@ module chamfer_cylinder( r, inset=1, angle=45 )
   polygon( [ [-1,-1], [x,-1], [x,0], [0,y], [-1,y] ] );
 }
 
-module chamfer_hole( r, inset, extra=true )
+module chamfer_hole( r, inset=1, extra=true )
 {
   more = 0.3;
   if (extra) {
@@ -19,6 +19,15 @@ module chamfer_hole( r, inset, extra=true )
   } else {
     cylinder( r1 = r + inset, r2 = r - inset, h = inset * 2 );
   }
+}
+
+module chamfer_squareHole( x, y, inset=1, extra=true )
+{
+    more=0.3;
+    scale = y/x;
+    bodge = sqrt( 2 );
+    
+    translate([0,0,-0.001]) scale( [1,scale,1] ) rotate([0,0,45]) cylinder( d2=bodge*x, d1=bodge* (x + inset*2), h=inset*bodge, $fn=4 );
 }
 
 module chamfer_edge( l, inset = 1, angle = 45, extra=true )
