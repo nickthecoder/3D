@@ -30,10 +30,6 @@ SURROUND_THICKNESS=1.2;
 BODY_MARGIN=4;
 BODY_HEIGHT=10;
 
-module notchProfile( size )
-{
-    polygon( [ [0,0], [size,0], [size, size] ] );
-}
 
 /*
     The part that is pushed. Printed using transparent plastic, as the light from the LED must pass through.
@@ -42,22 +38,25 @@ module cap( d=16, h=CAP_HEIGHT, insideH=INSIDE_HEIGHT, thickness=THICKNESS, top=
 {
     // Top
     difference() {
-        translate( [0,0,h-chamfer] ) cylinder( d1=d, d2=d-chamfer*2, h=chamfer, $fn=SIDES );
-        translate( [0,0,h-chamfer-0.01] ) cylinder( d1=d-thickness*2, d2=d-thickness*2-chamfer*2+top*2, h=chamfer-top, $fn=SIDES );
+        translate( [0,0,0] ) cylinder( d2=d, d1=d-chamfer*2, h=chamfer, $fn=SIDES );
+        translate( [0,0,top] ) cylinder( d2=d-thickness*2, d1=d-thickness*2-chamfer*2+top*2, h=chamfer-top+0.01, $fn=SIDES );
     }
 
     // Edges
-    linear_extrude( h-chamfer, convexity=4 ) {
+    translate( [0,0,chamfer] ) linear_extrude( h-chamfer, convexity=4 ) {
         difference() {
             circle( d=d, $fn=SIDES );
             circle( d=d-thickness*2, $fn=SIDES );
         }
     }
         
-    // How the cap pushes down on the 'inside' piece.
-    jutting=1.5;
-    #translate([0,0,insideH]) rotate_extrude( $fn=SIDES ) {
-        translate([d/2-jutting-thickness,0]) notchProfile( jutting );
+}
+
+module labelledCap( d=16, h=CAP_HEIGHT, insideH=INSIDE_HEIGHT, thickness=THICKNESS, top=CAP_TOP*3, chamfer=CHAMFER, symbolH=0.8 )
+{
+    difference() {
+        cap( d, h, insideH, thickness, top, chamfer );
+        translate([0,0,-0.01]) linear_extrude( symbolH, convexity=10 ) children();
     }
 }
 
@@ -167,18 +166,27 @@ module inspect()
     }
 }
 
+module powerSymbol()
+{
+    $fn=20;
+    difference() {
+        circle( d=8 );
+        circle( d=6 );
+        translate( [0,4] ) square( 3, center=true );
+    }
+    translate( [0,3]) square( [1,3], center=true );
+}
+
 // The following are used during development only. The final pieces each have their own scad file.
 
-//inspect() {
+inspect() {
+    rotate( [0,0,90] ) inside();
+    translate([0,0,THICKNESS+CAP_HEIGHT]) rotate([180,0,0]) cap();
+    translate([0,0,-1]) body();
+}
 
-
-//inside();
-//%translate([0,0,THICKNESS]) cap();
-//translate([0,0,-1]) body();
-
-translate([20,0,CAP_HEIGHT]) rotate([180,0,0]) cap();
-translate([38,0,0]) inside();
-translate([60,0,BODY_HEIGHT+SURROUND_THICKNESS]) rotate([180,0,0]) body();
-//}
+translate([25,0,0]) cap();
+translate([43,0,0]) inside();
+translate([65,0,BODY_HEIGHT+SURROUND_THICKNESS]) rotate([180,0,0]) body();
 
 
