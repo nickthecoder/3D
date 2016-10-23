@@ -62,24 +62,21 @@ void RealTimeClock::read()
     byte year;
     readDS3231time( &(this->second), &(this->minute), &(this->hour), &doy, &dom, &month, &year );
     
-    Serial.print( "Time " );Serial.print( this->hour ); Serial.print(":"); Serial.print( this->minute ); Serial.print( ":" );Serial.println( this->second );
-    Serial.print( "Date " );Serial.print( year ); Serial.print("/"); Serial.print( month ); Serial.print( "/" );Serial.println( dom );
+    //Serial.print( "Time " );Serial.print( this->hour ); Serial.print(":"); Serial.print( this->minute ); Serial.print( ":" );Serial.println( this->second );
+    //Serial.print( "Date " );Serial.print( year ); Serial.print("/"); Serial.print( month ); Serial.print( "/" );Serial.println( dom );
 }  
 
 
 RealTimeClock::RealTimeClock()
 {
     Wire.begin();
-    Serial.println( "Initialised Wire" );
+    //Serial.println( "Initialised Wire" );
 
     // set the initial time here:
     // DS3231 seconds, minutes, hours, day, date, month, year
     this->second = 0;
     this->minute = 0;
     this->hour = 0;
-    
-    Serial.println( "Setting a dummy time (use during development only)" );
-    setDS3231time(35,42,21,4,26,11,15);
     
     this->read();
 }

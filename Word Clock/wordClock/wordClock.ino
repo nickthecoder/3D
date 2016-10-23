@@ -23,42 +23,15 @@
     The words are different lengths, and therefore have different numbers of LEDs. With a 12V supply
     and 3.0V forward current, I've chosen to run the LEDs under their 20mA rating, using resistor values : 
     
-      2 LEDs in series : 470ohm
-      3 LEDs in series : 150ohm
-
-    For more than 3 LEDs, we create parallel circuits using the above.
-      4 LEDs : 2 + 2 (total of  ohm)
-      5 LEDs : 2 + 3 (total of  ohm)
-      6 LEDs : 3 + 3 (total of  ohm)
-      7 LEDs : 2,2,3 (total of  ohm)
-      8 LEDs : 3,3,2 (total of  ohm)
-      9 LEDs : 3,3,3 (total of  ohm)
-      10 LEDs : 3,3,2,2,2 (total of ohm)
-
-    And therefore the base resitor for the NPN transistors are : (RB = 0.2 × RL × hFE, using hFE of 100...)
-      2 LEDs : k
-      3 LEDs : k
-      4 LEDs : k
-      5 LEDs : k
-      6 LEDs : k
-      7 LEDs : 
-      8 LEDs : k
-      9 LEDs :  ohm
-     10 LEDs :  ohm
-   I believe these are the upper values, and can be rounded (to ensure that the gate is fully saturated), a lower value will
-   equally work, all be it with a slightly higher current.
-     
-   http://www.petervis.com/Raspberry_PI/Driving_LEDs_with_CMOS_and_TTL_Outputs/Driving_an_LED_Using_Transistors.html
-   
    The 12V supply is to be fed commonly to all boxes (via resitors to each branch of LEDs) and the anodes are wired to the collector of the NPN LED driver.
-   There is a single transistor per box, a single base restistor per transistor, and a current limiting load resistor for each branch of LEDs.
+   There is a single transistor per box, a single base resistor per transistor, and a current limiting load resistor for each branch of LEDs.
 
-   I'll use 3x 595 8-Bit Shift Registers, giving 24 outputs, and ideally I need 25. So either the "It's" or the "set" box will be handled independantly.
+   It use 3x 595 8-Bit Shift Registers, giving 24 outputs, and ideally I need 25. So either the "It's" or the "set" box will be handled independantly.
 
    The time is kept using a dedicated real time clock chip, with battery backup using a small CR2032 battery,
 
-   Ideas
-   =====
+   Future Ideas
+   ============
    
    Use a single PWM pin through a transistor on the cathode side, so that all LEDs can be dimmed. (Note requires reverse logic; high value -> low intensity).
    
@@ -72,11 +45,13 @@
   Alternatively, use up/down and mode buttons to set the time
   
   Or use an IR remote control instead of / as well as physical buttons.
-
 */
 
+#include <Wire.h>
 #include <abstractIO.h>;
 #include <abstract_shift595.h>;
+
+#include "realTimeClock.h"
 
 // Define the pins used
 #define SHIFT_CLOCK 12
@@ -86,27 +61,30 @@
 #define PIN_MINUS 7
 #define PIN_MODE 6
 #define PIN_PLUS 5
-
+ 
 // Number of shift register bytes
 #define SHIFT_CHIPS 3
 
 // Define the index of each box within the shift register array.
-#define BOX_ITS 0
-#define BOX_JUST_GONE 1
-#define BOX_NEARLY 2
-#define BOX_TWENTY 3
-#define BOX_FIVE 4
-#define BOX_TEN 5
-#define BOX_QUARTER 6
-#define BOX_TO 7
-#define BOX_HALF 8
-#define BOX_PAST 9
-#define HOUR_ONE 10
-#define HOUR_TWELVE 21
-#define BOX_SET 22
-#define BOX_MINS 23
-#define BOX_TENS 24
-#define BOX_OCLOCK 25
+#define BOX_ITS 16
+#define BOX_JUST_GONE 17
+#define BOX_NEARLY 18
+
+#define BOX_QUARTER 19
+#define BOX_TO 20
+#define BOX_HALF 21
+#define BOX_PAST 22
+
+#define BOX_TWENTY 23
+#define BOX_FIVE 8
+#define BOX_TEN 9
+
+byte HOURS[12] = { 10,11,12,13,14,15,0,1,2,7,3,4 };
+
+#define BOX_MINS 6
+#define BOX_OCLOCK 5
+//#define BOX_SET 
+
 
 Shift595 shiftRegister = Shift595( SHIFT_LATCH, SHIFT_CLOCK, SHIFT_DATA, SHIFT_CHIPS );
 
@@ -123,7 +101,9 @@ InputButton *buttonMode;
 #define MODE_MINS 4
 
 
-int mode = MODE_TEST;
+int mode = MODE_TIME;
+
+RealTimeClock *clock;
 
 void clearBuffer( byte value=0 )
 {
@@ -134,6 +114,12 @@ void clearBuffer( byte value=0 )
 
 void setup()
 {
+    Serial.begin( 9600 );
+    Serial.println( "Setup begin" );
+
+    clock = new RealTimeClock();
+    Serial.println( "Initialised RTC" );
+    
     buttonMinus = new InputButton( (new SimpleInput( PIN_MINUS, LOW, true ))->debounced() );
     buttonPlus  = new InputButton( (new SimpleInput( PIN_PLUS,  LOW, true ))->debounced() );
     buttonMode  = new InputButton( (new SimpleInput( PIN_MODE,  LOW, true ))->debounced() );
@@ -141,24 +127,69 @@ void setup()
     
     // initialize digital pin 13 as an output.
     pinMode(13, OUTPUT);
-  
-    clearBuffer( 0 );
-    shiftRegister.update();
-    delay(100);
+
     clearBuffer( 255 );
     shiftRegister.update();
-    delay(100);
+    
+    mode = MODE_TIME;
+    
+    // As I haven't coded the "set clock" feature yet, I'm setting the clock by hard coding it, uploading,
+    // and the commenting it out again.
+    //clock->minute=19;
+    //clock->hour=7;
+    //clock->set();
+    
+    Serial.println( "Setup complete" );
+}
 
-    // Display each box in turn, as a simple test pattern
-    for ( int i = 0; i < SHIFT_CHIPS*8; i ++ ) {
-        shiftRegister.set( i );
-        shiftRegister.update();
-        delay( 200 );
-        shiftRegister.reset( i );                
-        shiftRegister.update();
+void testWords()
+{
+    Serial.println( "testWords Line 1");
+    testWord( BOX_ITS );  
+    testWord( BOX_JUST_GONE );  
+    testWord( BOX_NEARLY );  
+    Serial.println( "testWords Line 2");
+    testWord( BOX_TWENTY );  
+    testWord( BOX_FIVE );  
+    testWord( BOX_TEN ); 
+    
+    Serial.println( "testWords Line 3");
+    testWord( BOX_QUARTER );  
+    testWord( BOX_TO );    
+    testWord( BOX_HALF );
+    testWord( BOX_PAST );
+    
+    Serial.println( "testWords Hours");
+    for ( int i = 1; i <= 12; i ++ ) {
+        testWord( HOURS[i-1] );
     }
+    
+    Serial.println( "testWords last line");
+    testWord( BOX_MINS );  
+    testWord( BOX_OCLOCK );  
+}
 
-    clearBuffer( 255 );
+void testWord( int i )
+{
+    clearBuffer( 0 );
+    shiftRegister.set( i );
+    shiftRegister.update();
+    delay( 800 );
+}
+
+int testByButtonIndex = 0;
+
+void testByButton()
+{
+    if (buttonMode->pressed()) {
+        Serial.println( "Pressed" );
+        testByButtonIndex ++;
+        if (testByButtonIndex >= 25 ) {
+            testByButtonIndex = 0;
+        }
+    }
+    clearBuffer( 0 );
+    shiftRegister.set( testByButtonIndex );
     shiftRegister.update();
 }
 
@@ -176,7 +207,10 @@ void loop()
     if ( mode == MODE_TIME ) {
         modeTime();
     } else if ( mode == MODE_TEST ) {
-        modeTest();
+        //modeTest();
+        //testWords();
+        //testByButton();
+        modeRace();
     }
 }
 
@@ -184,6 +218,10 @@ void modeTest()
 {
     digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(100);
+    clock->read();
+    Serial.print( "Seconds " ); Serial.println( clock->second );
+    Serial.print( "Minutes " ); Serial.println( clock->minute );
+    Serial.print( "Hour    " ); Serial.println( clock->hour );
 
     digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
     clearBuffer( n );         
@@ -196,7 +234,11 @@ void modeTest()
     delay(800);
 }
 
-void modeTime()
+/*
+  Race through all the possible times, one minute is compressed to 1 second.
+  Start at 12:00.
+*/
+void modeRace()
 {
     // Read the time
     // During testing, don't use the real time clock, just run through all combinations.
@@ -212,12 +254,31 @@ void modeTime()
     displayTime( hour, minutes );    
     
     // Update the display (moving the buffered values into the shift register)
-    shiftRegister.update();    
+    shiftRegister.update();
+    delay( 500 );
 }
 
+void modeTime()
+{
+    clock->read();
+
+    // Turn off all LEDs (in the buffer only)
+    clearBuffer();
+    
+    // Work out which boxes to light
+    displayTime( clock->hour % 12, clock->minute );    
+    
+    // Update the display (moving the buffered values into the shift register)
+    shiftRegister.update();
+    delay( 500 );    
+}
 
 void displayTime( int hour, int minutes )
 {
+    Serial.print( hour );
+    Serial.print(":");
+    Serial.println( minutes );
+
     // Turn on "It's"
     shiftRegister.set( BOX_ITS );
 
@@ -225,9 +286,17 @@ void displayTime( int hour, int minutes )
     int subFive = minutes % 5; 
     
     // Range of 0..11 representing minutes : 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55
-    int nearestFive = minutes / 5; 
+    int nearestFive = minutes / 5;
+    
+    // Are we nearer to the NEXT five minute mark?
     if ( subFive > 2 ) {
-        nearestFive = (nearestFive + 1) % 12;
+        // If we are approching an hour, then it will be "nearly XX O'clock", where XX is the NEXT hour.
+        if (nearestFive == 11) {
+            nearestFive = 0;
+            hour ++;
+        } else {
+            nearestFive ++;
+        }
         // Turn on "nearly"
         shiftRegister.set( BOX_NEARLY );
         
@@ -253,7 +322,7 @@ void displayTime( int hour, int minutes )
     
     // Turn on the appropriate minutes : "five ten quarter twenty half"
     
-    if ( (nearestFive == 1) || (nearestFive == 5) || (nearestFive == 7) || (nearestFive = 11) ) {
+    if ( (nearestFive == 1) || (nearestFive == 5) || (nearestFive == 7) || (nearestFive == 11) ) {
         // Turn on "five"
         shiftRegister.set( BOX_FIVE );
     }
@@ -268,7 +337,7 @@ void displayTime( int hour, int minutes )
         shiftRegister.set( BOX_QUARTER );
     }
     
-    if ( (nearestFive == 4) || (nearestFive == 5) || (nearestFive == 7) || (nearestFive=8) ) {
+    if ( (nearestFive == 4) || (nearestFive == 5) || (nearestFive == 7) || (nearestFive == 8) ) {
         // Turn on "twenty
         shiftRegister.set( BOX_TWENTY );
     }
@@ -281,10 +350,10 @@ void displayTime( int hour, int minutes )
         
     if ( hour == 0 ) {
         // turn on "twelve"
-        shiftRegister.set( HOUR_TWELVE );
+        shiftRegister.set( HOURS[11] );
     } else {
         // turn on one of "one".."eleven"
-        shiftRegister.set( HOUR_ONE + hour - 1 );
+        shiftRegister.set( HOURS[hour-1] );
     }
     
 }
